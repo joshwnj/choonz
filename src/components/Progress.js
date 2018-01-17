@@ -5,9 +5,7 @@ function formatTime (seconds) {
   return hms.fromS(Math.round(seconds), 'mm:ss')
 }
 
-module.exports = function Progress ({ buffer, progress }) {
-  if (!buffer || !progress) { return '' }
-  
-  const { duration } = buffer
-  return html`<div class='progress'>${formatTime(progress)} / ${formatTime(duration)}</div>`
+module.exports = function Progress ({ audio }) {
+  const { currentTime, duration } = audio
+  return html`<div class='progress'>${formatTime(currentTime)} / ${formatTime(duration)}</div>`
 }

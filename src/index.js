@@ -68,8 +68,18 @@ function findTracks (dir) {
 
 async function store (state, emitter) {
   const dir = process.cwd()
+  const audio = new Audio()
+  audio.autoplay = true
 
-  state.progress = 0
+  audio.onended = () => {
+    emitter.emit('next')
+  }
+
+  audio.onplay = () => {
+    emitter.emit('render')
+  }
+
+  state.audio = audio
   state.currentTrack = 0
   state.tracks = await findTracks(dir)
 
@@ -77,7 +87,7 @@ async function store (state, emitter) {
 
   emitter.on('togglePlaying', function () {
     if (state.isPlaying) { pause() }
-    else { resume(state.progress) }
+    else { resume() }
 
     emitter.emit('render')
   })
@@ -106,83 +116,49 @@ async function store (state, emitter) {
 
   emitter.on('scrub', (value) => {
     pause()
-    state.progress = value
+    state.audio.currentTime = value
     state.isScrubbing = true
     emitter.emit('render')
   })
 
   emitter.on('seek', (value) => {
-    const { bs, startedAt } = state
-    const time = ac.currentTime
-    
     state.isScrubbing = false
-    resume(value)
+
+    resume()
     emitter.emit('render')
   })
 
+  let lastTime
   setInterval(() => {
     const { 
-      buffer,
       isPlaying,
-      isScrubbing,
-      startedAt
+      isScrubbing
     } = state
-
     if (!isPlaying || isScrubbing) { return }
 
-    state.progress = Math.min(ac.currentTime - startedAt, buffer.duration)
+    const { currentTime } = audio
 
-    if (state.progress >= buffer.duration) {
-      pause()
-      emitter.emit('next')
-    }
-    else {
+    // only need to render when we've gone a whole second
+    const timeAtSec = Math.floor(currentTime)
+    if (timeAtSec !== lastTime) {
+      lastTime = timeAtSec
       emitter.emit('render')
     }
-  }, 500)
+  }, 200)
 
-  async function play (url) {
-    const bs = state.bs = ac.createBufferSource()
-    bs.buffer = state.buffer = await loadSample(url)
-
-    // url might have changed quicker than it could be loaded
-    // TODO: not so happy with this aspect of `await`. Would be better to have a way
-    // to explicitly cancel.
-    if (url !== state.tracks[state.currentTrack]) { return }
-
-    bs.connect(volume)
-
-    const time = ac.currentTime
-    bs.start(time)
+  function play (url) {
+    audio.src = state.tracks[state.currentTrack]
     state.isPlaying = true
-    state.startedAt = time
-    state.progress = 0
   }
 
   function resume (progress) {
-    const bs = state.bs = ac.createBufferSource()
-    bs.buffer = state.buffer
-
+    audio.play()
     state.isPlaying = true
-    bs.connect(volume)
-
-    const time = ac.currentTime
-    bs.start(time, progress)
-    state.startedAt = time - progress
   }
 
   function pause () {
-    const { bs, startedAt } = state
-    const time = ac.currentTime
-
+    audio.pause()
     state.isPlaying = false
-    try {
-      bs.disconnect(volume)
-      bs.stop(time)
-      state.progress = time - startedAt
-    } catch (e) {
-
-    }
   }
 
   window.onkeydown = ({ key }) => {
@@ -202,17 +178,4 @@ async function store (state, emitter) {
         break
     }
   }
-}
-
-function loadSample (url) {
-  return new Promise((resolve, reject) => {
-    var request = new XMLHttpRequest()
-    request.open('GET', url)
-    request.responseType = 'arraybuffer'
-    request.onload = function () {
-      ac.decodeAudioData(request.response, resolve, reject)
-    }
-    
-    request.send()
-  })
 }
