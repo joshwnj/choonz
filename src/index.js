@@ -145,6 +145,11 @@ async function store (state, emitter) {
     const bs = state.bs = ac.createBufferSource()
     bs.buffer = state.buffer = await loadSample(url)
 
+    // url might have changed quicker than it could be loaded
+    // TODO: not so happy with this aspect of `await`. Would be better to have a way
+    // to explicitly cancel.
+    if (url !== state.tracks[state.currentTrack]) { return }
+
     bs.connect(volume)
 
     const time = ac.currentTime
