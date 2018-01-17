@@ -1,7 +1,7 @@
 {
   "name": "choonz",
   "version": "1.0.1",
-  "description": "",
+  "description": "Listen to some music with [`choo`](https://github.com/choojs/choo)",
   "main": "src/index.js",
   "bin": {
     "choonz": "./bin/choonz"
@@ -18,5 +18,14 @@
     "choo-devtools": "^2.3.3",
     "glob": "^7.1.2",
     "hh-mm-ss": "^1.2.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshwnj/choonz.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joshwnj/choonz/issues"
+  },
+  "homepage": "https://github.com/joshwnj/choonz#readme"
 }
