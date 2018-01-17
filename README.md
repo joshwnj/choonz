@@ -9,4 +9,12 @@ cd ~/Music
 npx choonz
 ```
 
-![example](https://user-images.githubusercontent.com/36711/34757865-1d905bbc-f628-11e7-80bb-6679dab9d8df.png)
+![example](https://user-images.githubusercontent.com/36711/35025803-b6bf165c-fb9b-11e7-9f02-85b9f9ce8f19.png)
+
+## What about the code?
+
+I'm still learning how to use `choo` and some other things. So feel free to suggest improvements, but maybe don't use this as the basis for anything serious :)
+
+## License
+
+MIT
