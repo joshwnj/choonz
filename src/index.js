@@ -29,7 +29,7 @@ function formatName (trackPath) {
 }
 
 function mainView (state, emit) {
-  if (!state.tracks) { return html`<div>loading...</div>` }
+  if (!state.tracks) { return html`<div class='loading'>loading...</div>` }
   const trackPath = state.tracks[state.currentTrack]
   
   return html`
@@ -41,9 +41,9 @@ function mainView (state, emit) {
 
       <div class='playback'>
         <div class='buttons'>
-          <button onclick=${onclick}>${state.isPlaying ? 'pause' : 'play'}</button>
-          <button onclick=${() => emit('prev')}>prev</button>
-          <button onclick=${() => emit('next')}>next</button>
+          <button class='ft2' onclick=${onclick}>${state.isPlaying ? 'pause' : 'play'}</button>
+          <button class='ft2' onclick=${() => emit('prev')}>prev</button>
+          <button class='ft2' onclick=${() => emit('next')}>next</button>
         </div>
 
         ${Progress(state)}
