@@ -99,18 +99,16 @@ async function store (state, emitter) {
     if (state.currentTrack < 0) {
       state.currentTrack = state.tracks.length
     }
-    
+
     play(state.tracks[state.currentTrack])
   })
-  
-  emitter.on('next', () => {
-    pause()
 
+  emitter.on('next', () => {
+    // stop when we get to the end
+    if (state.currentTrack === state.tracks.length - 1) { return }
+
+    pause()
     state.currentTrack += 1
-    if (state.currentTrack >= state.tracks.length) {
-      state.currentTrack = 0
-    }
-    
     play(state.tracks[state.currentTrack])
   })
 
@@ -130,7 +128,7 @@ async function store (state, emitter) {
 
   let lastTime
   setInterval(() => {
-    const { 
+    const {
       isPlaying,
       isScrubbing
     } = state
@@ -168,12 +166,10 @@ async function store (state, emitter) {
         break
 
       case ']':
-        pause()
         emitter.emit('next')
         break
       
       case '[':
-        pause()
         emitter.emit('prev')
         break
     }
