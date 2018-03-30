@@ -105,7 +105,6 @@ async function store (state, emitter) {
 
   emitter.on('next', () => {
     // stop when we get to the end
-    console.log(state.currentTrack, state.tracks.length)
     if (state.currentTrack === state.tracks.length - 1) { return }
 
     pause()
@@ -129,7 +128,7 @@ async function store (state, emitter) {
 
   let lastTime
   setInterval(() => {
-    const { 
+    const {
       isPlaying,
       isScrubbing
     } = state
