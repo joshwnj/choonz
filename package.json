@@ -1,6 +1,6 @@
 {
   "name": "choonz",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Listen to some music with [`choo`](https://github.com/choojs/choo)",
   "main": "src/index.js",
   "bin": {
