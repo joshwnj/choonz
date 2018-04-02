@@ -25,7 +25,11 @@ function formatDir (trackPath) {
 
 function formatName (trackPath) {
   const parts = trackPath.split(path.sep)
-  return parts[parts.length - 1]
+  const name = parts[parts.length - 1]
+  const dir = formatDir(trackPath)
+
+  // if the song name begins with the directory name, we don't need to repeat
+  return name.replace(`${dir} -`, '')
 }
 
 function mainView (state, emit) {
